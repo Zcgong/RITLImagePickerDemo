@@ -93,15 +93,28 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
 
 -(void)fetchDefaultPhotosGroup:(void (^)(NSArray<PHAssetCollection *> * _Nonnull))groups
 {
+    [self fetchDefaultPhotosGroupReponseChanged:^(NSArray<PHAssetCollection *> * _Nonnull group, PHFetchResult * _Nonnull result) {
+        
+        groups(group);
+        
+    }];
+}
+
+
+
+-(void)fetchDefaultPhotosGroupReponseChanged:(void (^)(NSArray<PHAssetCollection *> * _Nonnull, PHFetchResult * _Nonnull))groups
+{
     __weak typeof(self) weakSelf = self;
     
     [self fetchBasePhotosGroup:^(PHFetchResult * _Nullable result) {
        
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
         if (result == nil) return;
         
-        [weakSelf preparationWithFetchResult:result complete:^(NSArray<PHAssetCollection *> * _Nonnull defalutGroup) {
-           
-            groups([weakSelf handleAssetCollection:defalutGroup]);
+        [strongSelf preparationWithFetchResult:result complete:^(NSArray<PHAssetCollection *> * _Nonnull defalutGroup) {
+            
+            groups([strongSelf handleAssetCollection:defalutGroup],result);
             
         }];
         
@@ -112,26 +125,34 @@ typedef void(^PHAssetCollectionBlock)(NSArray<PHAssetCollection *> * groups);
 
 -(void)fetchDefaultAllPhotosGroup:(void (^)(NSArray<PHAssetCollection *> * _Nonnull,PHFetchResult * _Nonnull))groups
 {
+    [self fetchDefaultAllPhotosGroupReponseChanged:^(NSArray<PHAssetCollection *> * _Nonnull defaultAllGroups, PHFetchResult * _Nonnull smartResult, PHFetchResult * _Nonnull result) {
+        
+        groups(defaultAllGroups,result);
+        
+    }];
+}
+
+
+
+
+-(void)fetchDefaultAllPhotosGroupReponseChanged:(void (^)(NSArray<PHAssetCollection *> * _Nonnull, PHFetchResult * _Nonnull, PHFetchResult * _Nonnull))groups
+{
     __block NSMutableArray <PHAssetCollection *> * defaultAllGroups = [NSMutableArray arrayWithCapacity:0];
     
-    [self fetchDefaultPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull defaultGroups) {
-       
-        [defaultAllGroups addObjectsFromArray:defaultGroups];
+    [self fetchDefaultPhotosGroupReponseChanged:^(NSArray<PHAssetCollection *> * _Nonnull defaultGroups, PHFetchResult * _Nonnull smartResult) {
         
+        [defaultAllGroups addObjectsFromArray:defaultGroups];
+       
         //遍历自定义的组
         [[PHCollection fetchTopLevelUserCollectionsWithOptions:[[PHFetchOptions alloc]init]] transToArrayComplete:^(NSArray<PHAssetCollection *> * _Nonnull topLevelArray, PHFetchResult * _Nonnull result) {
             
             [defaultAllGroups addObjectsFromArray:topLevelArray];
             
             //callBack with block
-            groups([NSArray arrayWithArray:defaultAllGroups],result);
-            
-            defaultAllGroups = nil;
+            groups([defaultAllGroups copy],smartResult,result);
             
         }];
-        
     }];
-    
 }
 
 #pragma mark - 处理照片

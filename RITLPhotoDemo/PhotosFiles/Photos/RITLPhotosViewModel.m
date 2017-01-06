@@ -28,12 +28,32 @@
 /// 存放当前所有的照片对象
 @property (nonatomic, copy) NSArray <PHAsset *> * photosAssetResult;
 
+/// 用来监听变化的photoStore
+@property (nonatomic, strong) RITLPhotoStore * photoStore;
 
 @end
 
 @implementation RITLPhotosViewModel
 
-
+-(instancetype)init
+{
+    if (self = [super init])
+    {
+        _photoStore = [RITLPhotoStore new];
+        
+        __weak typeof(self) weakSelf = self;
+        
+        _photoStore.photoStoreHasChanged = ^(PHChange * change){
+          
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            
+            [strongSelf ritl_checkChangedDetail:change];
+            
+        };
+    }
+    
+    return self;
+}
 
 
 
@@ -203,7 +223,13 @@
     _assetCollection = assetCollection;
     
     self.assetResult = [RITLPhotoStore fetchPhotos:assetCollection];
-    
+}
+
+
+
+-(void)setAssetResult:(PHFetchResult *)assetResult
+{
+    _assetResult = assetResult;
     
     
     RITLPhotoCacheManager * photoCacheManager = [RITLPhotoCacheManager sharedInstace];
@@ -218,21 +244,13 @@
     
     //初始化所有图片的数组
     [self.assetResult preparationWithType:PHAssetMediaTypeImage Complete:^(NSArray<PHAsset *> * _Nullable allPhotoAssets) {
-       
+        
         __strong typeof(weakSelf) strongSelf = weakSelf;
         
         strongSelf.photosAssetResult = allPhotoAssets;
         
     }];
 
-}
-
-
-
--(void)setAssetResult:(PHFetchResult *)assetResult
-{
-    _assetResult = assetResult;
-    
     //初始化所有的数组
     [assetResult transToArrayComplete:^(NSArray<PHAsset *> * _Nonnull assets, PHFetchResult * _Nonnull result) {
        
@@ -305,6 +323,109 @@
     NSLog(@"Dealloc %@",NSStringFromClass([self class]));
 #endif
 }
+
+
+
+#pragma mark - Change
+
+
+
+/**
+ 检测相册所有数据的变化
+ 
+ @param change 变化对象
+ */
+- (void)ritl_checkChangedDetail:(PHChange *)change
+{
+//    //检测当前组是否发生变化
+//    PHFetchResultChangeDetails * resultChangeObject = [change changeDetailsForFetchResult:self.assetResult];
+//    
+//    if (!resultChangeObject.hasIncrementalChanges)
+//    {
+//        return;
+//    }
+//    
+//    // 获得改变前的result
+//    PHFetchResult * resultBeforeChanges = resultChangeObject.fetchResultBeforeChanges;
+//    
+//    // 获得改变后的result
+//    PHFetchResult * resultAfterChanges = resultChangeObject.fetchResultAfterChanges;
+//    
+//    
+//    
+//    //赋值
+////    self.assetResult = result;
+//    
+//    
+//    //remove
+//    NSMutableIndexSet * removeSet = resultChangeObject.removedIndexes;
+//    
+//    NSArray <PHAsset *> * removeObject = resultChangeObject.removedObjects;
+//    
+//    if (removeSet)
+//    {
+//        //删除该位置的图片
+//        
+//        
+//        NSUInteger i = 1;
+//    }
+//    
+//    
+//    //insert
+//    NSMutableIndexSet * insertSet = resultChangeObject.insertedIndexes;
+//    
+//    if (insertSet)
+//    {
+//        //插入位置的图片
+//        
+//        NSUInteger i = 1;
+//    }
+//    
+//    
+//    //insert
+////    NSIndexSet * insertSet = resultChangeObject.insertedIndexes;
+//    
+//    
+//    if ([[NSThread currentThread] isMainThread])
+//    {
+////        self.reloadBlock(); return;
+//    }
+//    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        
+//        //刷新
+////        self.reloadBlock();
+//        
+//    });
+    
+
+    
+//    //获得remove的项
+//    NSIndexSet * removeSet = detailChangeObject.removedIndexes;
+//    
+//    if (!removeSet)
+//    {
+//        //进行移除
+//    }
+//    
+//    //获得
+    
+    
+    
+//    if ([[NSThread currentThread] isMainThread])
+//    {
+////        [self fetchDefaultGroups]; return;
+//    }
+//    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        
+////        [self fetchDefaultGroups];
+//        
+//    });
+}
+
+
+
 
 @end
 

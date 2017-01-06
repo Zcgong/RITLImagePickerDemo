@@ -167,7 +167,7 @@ static NSString * reusableViewIdentifier = @"RITLPhotoBottomReusableView";
             };
             
             //进入一个浏览控制器
-            [strongSelf.navigationController pushViewController:[RITLPhotoBrowseController photosViewModelInstance:viewModel] animated:true];
+//            [strongSelf.navigationController pushViewController:[RITLPhotoBrowseController photosViewModelInstance:viewModel] animated:true];
             
         };
         
@@ -198,6 +198,15 @@ static NSString * reusableViewIdentifier = @"RITLPhotoBottomReusableView";
             __strong typeof(weakSelf) strongSelf = weakSelf;
             
             [strongSelf dismissViewController];
+        };
+        
+        
+        // 刷新
+        viewModel.reloadBlock = ^(){
+          
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            
+            [strongSelf.collectionView reloadData];
         };
     }
 }
@@ -374,7 +383,8 @@ static NSString * reusableViewIdentifier = @"RITLPhotoBottomReusableView";
     
     RITLPhotoPreviewController * viewController = [RITLPhotoPreviewController previewWithShowAsset:asset];
     
-    return viewController;
+//    return viewController;
+    return nil;
 }
 
 

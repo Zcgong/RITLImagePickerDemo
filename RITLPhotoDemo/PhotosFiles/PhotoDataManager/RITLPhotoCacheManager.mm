@@ -7,6 +7,7 @@
 //
 
 #import "RITLPhotoCacheManager.h"
+#import "NSArray+RITLPhotoRepresentation.h"
 
 @interface RITLPhotoCacheManager ()
 
@@ -48,10 +49,12 @@
 
 -(void)allocInitAssetIsSelectedSignal:(NSUInteger)count
 {
-//    if (self.assetIsSelectedSignal)
-//    {
-//        free(self.assetIsSelectedSignal);
-//    }
+    
+    if (self.assetIsSelectedSignal)
+    {
+        free(self.assetIsSelectedSignal);
+        self.assetIsSelectedSignal = nil;
+    }
     
     self.numberOfAssetIsSelectedSignal = count;
 
@@ -62,16 +65,34 @@
 }
 
 
+-(void)ritl_allocInitAssetIsSelectedSignal:(NSUInteger)count
+{
+    //记录
+    self.numberOfAssetIsSelectedSignal = count;
+    
+    self.assetIsSelectedSignalArray = [NSMutableArray arrayWithInitializeValue:@(false) count:count];
+}
+
+
 -(void)allocInitAssetIsPictureSignal:(NSUInteger)count
 {
-//    if (self.assetIsPictureSignal)
-//    {
-//        free(self.assetIsPictureSignal);
-//    }
-    
+    if (self.assetIsPictureSignal)
+    {
+        free(self.assetIsPictureSignal);
+        self.assetIsPictureSignal = nil;
+    }
+
     self.assetIsPictureSignal = new BOOL[count];
     
     memset(self.assetIsPictureSignal,false,count * sizeof(BOOL));
+}
+
+
+
+
+-(void)ritl_allocInitAssetIsPictureSignal:(NSUInteger)count
+{
+    self.assetIsPictureSignalArray = [NSMutableArray arrayWithInitializeValue:@(false) count:count];
 }
 
 
@@ -85,7 +106,14 @@
     
     self.assetIsSelectedSignal[index] = !self.assetIsSelectedSignal[index];
     
-    printf("选中状态:%d\n",self.assetIsSelectedSignal[index]);
+//    self.assetIsSelectedSignalArray = CFBridgingRelease(self.assetIsPictureSignal);
+    
+    //修改修改后的状态
+    BOOL value = [self.assetIsSelectedSignalArray[index] boolValue];
+    [self.assetIsSelectedSignalArray replaceObjectAtIndex:index withObject:@(value)];
+    
+//    printf("选中状态:%d\n",self.assetIsSelectedSignal[index]);
+    printf("选中状态:%d\n",self.assetIsSelectedSignalArray[index].boolValue);
     
     return true;
 }
@@ -104,11 +132,13 @@
     if (self.assetIsPictureSignal)
     {
         free(self.assetIsPictureSignal);
+        self.assetIsPictureSignal = nil;
     }
     
     if (self.assetIsSelectedSignal)
     {
         free(self.assetIsSelectedSignal);
+        self.assetIsSelectedSignal = nil;
     }
     
     _numberOfSelectedPhoto = 0;

@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef PhotoBlock          RITLShouldDismissBlock;
 typedef PhotoCompleteBlock6 RITLShouldAlertToWarningBlock;
+typedef PhotoBlock          RITLShouldReloadBlock;
 
 /// 基础的viewModel
 @interface RITLBaseViewModel : NSObject <RITLPublicViewModel>
@@ -23,6 +24,8 @@ typedef PhotoCompleteBlock6 RITLShouldAlertToWarningBlock;
 /// 模态弹出的回调
 @property (nonatomic, copy, nullable)RITLShouldDismissBlock dismissBlock;
 
+/// 刷新的block
+@property (nonatomic, copy, nullable)RITLShouldReloadBlock reloadBlock;
 
 /// 选择图片完成
 - (void)photoDidSelectedComplete;

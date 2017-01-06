@@ -26,11 +26,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isHightQuarity;
 
 /// 资源是否为图片的标志位
-@property (nonatomic, assign) BOOL * assetIsPictureSignal;
+@property (nonatomic, assign, nullable) BOOL * assetIsPictureSignal __deprecated_msg("Use assetIsPictureSignalArray instead.");
+
+/// 资源是否为图片的标志位，用以替代assetIsPictureSignal
+@property (nonatomic, strong) NSMutableArray <NSNumber *> * assetIsPictureSignalArray;
 
 /// 资源是否被选中的标志位
-@property (nonatomic, assign) BOOL * assetIsSelectedSignal;
+@property (nonatomic, assign, nullable) BOOL * assetIsSelectedSignal __deprecated_msg("Use assetIsSelectedSignal instead.");
 
+/// 资源是否被选中的标志位，用以替代assetIsSelectedSignal
+@property (nonatomic, strong) NSMutableArray <NSNumber *> * assetIsSelectedSignalArray;
 
 /// 获得单例对象
 + (instancetype)sharedInstace;
@@ -41,7 +46,17 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param count 初始化长度
  */
-- (void)allocInitAssetIsPictureSignal:(NSUInteger)count;
+- (void)allocInitAssetIsPictureSignal:(NSUInteger)count __deprecated_msg("Use -ritl_allocInitAssetIsPictureSignal: instead.");
+
+
+
+/**
+ 初始化资源是否为图片的标志位
+
+ @param count 初始化长度
+ */
+- (void)ritl_allocInitAssetIsPictureSignal:(NSUInteger)count;
+
 
 
 /**
@@ -49,7 +64,16 @@ NS_ASSUME_NONNULL_BEGIN
 
  @param count 初始化长度
  */
-- (void)allocInitAssetIsSelectedSignal:(NSUInteger)count;
+- (void)allocInitAssetIsSelectedSignal:(NSUInteger)count __deprecated_msg("Use -ritl_allocInitAssetIsSelectedSignal: instead.");
+
+
+
+/**
+ 初始化资源是否被选中的标志位
+
+ @param count 初始化长度
+ */
+- (void)ritl_allocInitAssetIsSelectedSignal:(NSUInteger)count;
 
 
 /**

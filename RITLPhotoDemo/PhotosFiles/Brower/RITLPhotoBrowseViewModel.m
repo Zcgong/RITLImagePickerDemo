@@ -57,7 +57,9 @@
     
     
     //获得所有选中的图片数组
-    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.allAssets status:cacheManager.assetIsSelectedSignal];
+//    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.allAssets status:cacheManager.assetIsSelectedSignal];
+    
+    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.allAssets statusArray:cacheManager.assetIsSelectedSignalArray];
     
     //进行回调
     [[RITLPhotoBridgeManager sharedInstance]startRenderImage:assets];
@@ -83,7 +85,9 @@
     NSUInteger item = currentIndex;
     
     // 表示消失还是选中，选中为1 未选中为 -1
-    NSInteger temp = cacheManager.assetIsSelectedSignal[item] ? -1 : 1;
+//    NSInteger temp = cacheManager.assetIsSelectedSignal[item] ? -1 : 1;
+    
+    NSInteger temp = cacheManager.assetIsSelectedSignalArray[item].boolValue ? -1 : 1;
     
     cacheManager.numberOfSelectedPhoto += temp;
     
@@ -375,7 +379,9 @@
 - (BOOL)ritl_currentPhotoIsSelected:(NSUInteger)index
 {
     //获得当前资源的状态
-    return [RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal[index];
+//    return [RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal[index];
+    
+    return [RITLPhotoCacheManager sharedInstace].assetIsSelectedSignalArray[index].boolValue;
 }
 
 

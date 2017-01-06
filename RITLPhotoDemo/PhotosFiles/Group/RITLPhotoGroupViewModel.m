@@ -13,7 +13,11 @@
 @interface RITLPhotoGroupViewModel ()
 
 @property (nonatomic, strong) RITLPhotoStore * photoStore;
+
 @property (nonatomic, strong) NSArray<PHAssetCollection *> * groups;
+
+@property (nonatomic, strong) PHFetchResult * smartFetchResult;
+@property (nonatomic, strong) PHFetchResult * topLevelFetchResult;
 
 @end
 
@@ -24,10 +28,24 @@
     if (self = [super init])
     {
         _photoStore = [RITLPhotoStore new];
+        
+        
+        __weak typeof(self) weakSelf = self;
+        
+        //记录外部图片变化
+        _photoStore.photoStoreHasChanged = ^(PHChange * change){
+            
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            
+            //检测变化
+            [strongSelf ritl_checkChangedDetail:change];
+        };
+        
     }
     
     return self;
 }
+
 
 -(void)dealloc
 {
@@ -35,6 +53,8 @@
     NSLog(@"Dealloc %@",NSStringFromClass([self class]));
 #endif
 }
+
+
 
 
 -(NSUInteger)numberOfGroup
@@ -102,6 +122,22 @@
     __weak typeof(self) weakSelf = self;
     
     
+    [_photoStore fetchDefaultAllPhotosGroupReponseChanged:^(NSArray<PHAssetCollection *> * _Nonnull groups, PHFetchResult * _Nonnull smartResult, PHFetchResult * _Nonnull topResult) {
+        
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        strongSelf.groups = groups;
+        
+        strongSelf.smartFetchResult = smartResult;
+        strongSelf.topLevelFetchResult = topResult;
+        
+        //进行回调
+        if (strongSelf.fetchGroupsBlock)  strongSelf.fetchGroupsBlock(strongSelf.groups);
+        
+    }];
+    
+    /******************************************************************************************
+    
     [_photoStore fetchDefaultAllPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups, PHFetchResult * _Nonnull collections) {
       
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -113,16 +149,19 @@
         
     }];
     
-//   [_photoStore fetchPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups) {
-//      
-//       __strong typeof(weakSelf) strongSelf = weakSelf;
-//       
-//       strongSelf.groups = groups;
-//       
-//       //进行回调
-//       if (strongSelf.fetchGroupsBlock)  strongSelf.fetchGroupsBlock(strongSelf.groups);
-//
-//   }];
+    
+   [_photoStore fetchPhotosGroup:^(NSArray<PHAssetCollection *> * _Nonnull groups) {
+      
+       __strong typeof(weakSelf) strongSelf = weakSelf;
+       
+       strongSelf.groups = groups;
+       
+       //进行回调
+       if (strongSelf.fetchGroupsBlock)  strongSelf.fetchGroupsBlock(strongSelf.groups);
+
+   }];
+     
+     ******************************************************************************************/
 }
 
 
@@ -170,6 +209,62 @@
 -(NSString *)title
 {
     return @"相册";
+}
+
+
+
+#pragma mark - Change
+
+
+
+/**
+ 检测相册所有数据的变化
+
+ @param change 变化对象
+ */
+- (void)ritl_checkChangedDetail:(PHChange *)change
+{
+    if ([[NSThread currentThread] isMainThread])
+    {
+        [self fetchDefaultGroups]; return;
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+       
+        [self fetchDefaultGroups];
+        
+    });
+}
+
+
+
+
+/**
+ 检测智能分组是否发生变化
+
+ @param changeDetails 详细对象
+ */
+- (void)ritl_smartChangeCheck:(PHFetchResultChangeDetails *)changeDetails
+{
+    
+}
+
+
+
+/**
+ 其他分组是否发生变化
+
+ @param changeDetails 详细对象
+ */
+- (void)ritl_topLevelChangeCheck:(PHFetchResultChangeDetails *)changeDetails
+{
+    // 如果没有变化
+    if (!changeDetails.hasIncrementalChanges)
+    {
+        return;
+    }
+    
+    [self fetchDefaultGroups];
 }
 
 

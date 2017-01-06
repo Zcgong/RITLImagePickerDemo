@@ -20,7 +20,19 @@ NS_ASSUME_NONNULL_BEGIN
  @param status 选中状态
  @return 
  */
-+ (NSArray <PHAsset *> *)assetForAssets:(NSArray <PHAsset *> *)assets status:(BOOL *)status;
++ (NSArray <PHAsset *> *)assetForAssets:(NSArray <PHAsset *> *)assets status:(BOOL *)status __deprecated_msg("Use -assetForAssets: statusArray: instead.");
+
+
+
+
+/**
+ 获得选择的图片数组
+
+ @param assets 所有的图片数组
+ @param status 选中状态
+ @return 
+ */
++ (NSArray <PHAsset *> *)assetForAssets:(NSArray<PHAsset *> *)assets statusArray:(NSArray <NSNumber *> *)status;
 
 
 @end

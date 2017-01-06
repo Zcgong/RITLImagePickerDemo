@@ -44,6 +44,10 @@ NS_AVAILABLE_IOS(8_0) @interface RITLPhotoStore : NSObject<PHPhotoLibraryChangeO
 - (void)fetchDefaultAllPhotosGroup:(void(^)(NSArray <PHAssetCollection *> * , PHFetchResult *)) groups;
 
 
+
+
+
+
 #pragma mark - 处理相册的方法
 /**
  获取某个相册的所有照片的简便方法
@@ -59,29 +63,26 @@ NS_AVAILABLE_IOS(8_0) @interface RITLPhotoStore : NSObject<PHPhotoLibraryChangeO
 @property (nullable, nonatomic, copy)void(^photoStoreHasChanged)(PHChange * changeInstance);
 
 
+/**
+ 根据photos提供的智能分类相册组
+ 根据config中的groupNamesConfig属性进行筛别
+
+ @param groups 成功返回所有对象的数组，以及智能相册组的PHFetchResult
+ */
+- (void)fetchDefaultPhotosGroupReponseChanged:(void(^)(NSArray <PHAssetCollection *> *,PHFetchResult * smartResult)) groups;
+
+
+/**
+ 根据photos提供的智能分类相册组
+ 根据config中的groupNamesConfig属性进行筛别 并添加上其他在手机中创建的相册
+ 
+ @param groups 成功返回所有对象的数组，以及智能相册组的PHFetchResult对象以及其他相册的PHFetchResult对象
+ */
+- (void)fetchDefaultAllPhotosGroupReponseChanged:(void(^)(NSArray <PHAssetCollection *> *,PHFetchResult * smartResult, PHFetchResult * )) groups;
+
+
+
 @end
-
-
-
-
-
-
-
-
-NS_CLASS_DEPRECATED_IOS(8_0, 10_0,"Use RITLPhotoRequestStore instead. see RITLPhotoRequestStore.h") @interface YPPhotoStoreHandleClass : NSObject
-
-/// 根据size以及图片状态获取资源转化后的图片对象数组
-+ (void)imagesWithAssets:(NSArray <PHAsset *> *)assets status:(NSArray <NSNumber *> *)status Size:(CGSize)size complete:(void (^)(NSArray <UIImage *> *))imagesBlock __deprecated_msg("Use RITLPhotoRequestStore instead. see RITLPhotoRequestStore.h");
-
-
-/// 根据资源以及状态获取资源转化后的data
-+ (void)dataWithAssets:(NSArray <PHAsset *> *)assets status:(NSArray <NSNumber *> *)status complete:(void (^)(NSArray <NSData *> *))dataBlock __deprecated_msg("Use RITLPhotoRequestStore instead. see RITLPhotoRequestStore.h");
-
-@end
-
-
-
-
 
 
 
@@ -102,11 +103,6 @@ NS_CLASS_DEPRECATED_IOS(8_0, 10_0,"Use RITLPhotoRequestStore instead. see RITLPh
 - (void)checkGroupExist:(NSString *)title result:(void(^)(BOOL isExist,PHAssetCollection * __nullable)) resultBlock;
 
 @end
-
-
-
-
-
 
 
 
@@ -138,6 +134,17 @@ NS_CLASS_DEPRECATED_IOS(8_0, 10_0,"Use RITLPhotoRequestStore instead. see RITLPh
 
 /** 获取某个相册的所有照片的简便方法 */
 - (PHFetchResult *)fetchPhotos:(PHAssetCollection *)group __deprecated_msg("Use +fetchPhotos: instead.");
+
+@end
+
+NS_CLASS_DEPRECATED_IOS(8_0, 10_0,"Use RITLPhotoRequestStore instead. see RITLPhotoRequestStore.h") @interface YPPhotoStoreHandleClass : NSObject
+
+/// 根据size以及图片状态获取资源转化后的图片对象数组
++ (void)imagesWithAssets:(NSArray <PHAsset *> *)assets status:(NSArray <NSNumber *> *)status Size:(CGSize)size complete:(void (^)(NSArray <UIImage *> *))imagesBlock __deprecated_msg("Use RITLPhotoRequestStore instead. see RITLPhotoRequestStore.h");
+
+
+/// 根据资源以及状态获取资源转化后的data
++ (void)dataWithAssets:(NSArray <PHAsset *> *)assets status:(NSArray <NSNumber *> *)status complete:(void (^)(NSArray <NSData *> *))dataBlock __deprecated_msg("Use RITLPhotoRequestStore instead. see RITLPhotoRequestStore.h");
 
 @end
 
