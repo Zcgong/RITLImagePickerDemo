@@ -4,6 +4,7 @@
 //
 //  Created by YueWen on 2016/11/29.
 //  Copyright © 2017年 YueWen. All rights reserved.
+//  Github:https://github.com/RITL/RITLImagePickerDemo
 //
 
 #import "RITLPhotosViewModel.h"
@@ -11,6 +12,7 @@
 
 #import "PHAsset+RITLPhotoRepresentation.h"
 #import "PHFetchResult+RITLPhotoRepresentation.h"
+#import "NSIndexSet+RITLPhotoRepresentation.h"
 
 #import "RITLPhotoCacheManager.h"
 #import "RITLPhotoHandleManager.h"
@@ -23,7 +25,7 @@
 @property (nonatomic, strong, readwrite) PHFetchResult * assetResult;
 
 /// 存储该组所有的asset对象的数组
-@property (nonatomic, copy)NSArray <PHAsset * > * assetResults;
+@property (nonatomic, strong)NSMutableArray <PHAsset * > * assetResults;
 
 /// 存放当前所有的照片对象
 @property (nonatomic, copy) NSArray <PHAsset *> * photosAssetResult;
@@ -83,10 +85,12 @@
         //判断资源是否为图片
         if (asset.mediaType == PHAssetMediaTypeImage)
         {
-            [RITLPhotoCacheManager sharedInstace].assetIsPictureSignal[item] = true;
+//            [RITLPhotoCacheManager sharedInstace].assetIsPictureSignal[item] = true;
+            [[RITLPhotoCacheManager sharedInstace].assetIsPictureSignalArray replaceObjectAtIndex:item withObject:@(true)];
         }
         
-        completeBlock(image,asset,[RITLPhotoCacheManager sharedInstace].assetIsPictureSignal[item],asset.duration);
+//        completeBlock(image,asset,[RITLPhotoCacheManager sharedInstace].assetIsPictureSignal[item],asset.duration);
+        completeBlock(image,asset,[RITLPhotoCacheManager sharedInstace].assetIsPictureSignalArray[item].boolValue,asset.duration);
         
     }];
 }
@@ -122,7 +126,8 @@
 {
     NSUInteger item = indexPath.item;
     
-    return [RITLPhotoCacheManager sharedInstace].assetIsPictureSignal[item];
+//    return [RITLPhotoCacheManager sharedInstace].assetIsPictureSignal[item];
+    return [RITLPhotoCacheManager sharedInstace].assetIsPictureSignalArray[item].boolValue;
 }
 
 -(void)didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -151,7 +156,8 @@
     NSUInteger item = indexPath.item;
     
     // 表示消失还是选中，选中为1 未选中为 -1
-    NSInteger temp = cacheManager.assetIsSelectedSignal[item] ? -1 : 1;
+//    NSInteger temp = cacheManager.assetIsSelectedSignal[item] ? -1 : 1;
+    NSInteger temp = cacheManager.assetIsSelectedSignalArray[item].boolValue ? -1 : 1;
     
     cacheManager.numberOfSelectedPhoto += temp;
     
@@ -168,7 +174,11 @@
     }
     
     // 修改数据源标志位
-    cacheManager.assetIsSelectedSignal[item] = !cacheManager.assetIsSelectedSignal[item];
+//    cacheManager.assetIsSelectedSignal[item] = !cacheManager.assetIsSelectedSignal[item];
+    
+    //修改标志位
+    BOOL isSelected = cacheManager.assetIsSelectedSignalArray[item].boolValue;
+    [cacheManager.assetIsSelectedSignalArray replaceObjectAtIndex:item withObject:@(isSelected)];
     
     [self ritl_checkPhotoSendStatusChanged];
     
@@ -195,7 +205,8 @@
 {
     NSUInteger item = indexPath.item;
     
-    return [RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal[item];
+//    return [RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal[item];
+    return [RITLPhotoCacheManager sharedInstace].assetIsSelectedSignalArray[item].boolValue;
 }
 
 
@@ -237,8 +248,11 @@
     unsigned long assetCount = self.assetResult.count;
     
     // 初始化
-    [photoCacheManager allocInitAssetIsPictureSignal:assetCount];
-    [photoCacheManager allocInitAssetIsSelectedSignal:assetCount];
+//    [photoCacheManager allocInitAssetIsPictureSignal:assetCount];
+//    [photoCacheManager allocInitAssetIsSelectedSignal:assetCount];
+    
+    [photoCacheManager ritl_allocInitAssetIsPictureSignal:assetCount];
+    [photoCacheManager ritl_allocInitAssetIsSelectedSignal:assetCount];
     
     __weak typeof(self) weakSelf = self;;
     
@@ -255,7 +269,7 @@
     [assetResult transToArrayComplete:^(NSArray<PHAsset *> * _Nonnull assets, PHFetchResult * _Nonnull result) {
        
         // 赋值
-        self.assetResults = assets;
+        self.assetResults = [assets mutableCopy];
         
     }];
     
@@ -266,7 +280,9 @@
 -(void)photoDidSelectedComplete
 {
     //获得所有选中的图片数组
-    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.assetResults status:[RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal];
+//    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.assetResults status:[RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal];
+    
+    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.assetResults statusArray:[RITLPhotoCacheManager sharedInstace].assetIsSelectedSignalArray];
     
     //进行回调
     [[RITLPhotoBridgeManager sharedInstance]startRenderImage:assets];
@@ -280,7 +296,9 @@
 -(void)pushBrowerControllerByBrowerButtonTap
 {
     //获得所有选中的图片数组
-    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.assetResults status:[RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal];
+//    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.assetResults status:[RITLPhotoCacheManager sharedInstace].assetIsSelectedSignal];
+    
+    NSArray <PHAsset *> * assets = [RITLPhotoHandleManager assetForAssets:self.assetResults statusArray:[RITLPhotoCacheManager sharedInstace].assetIsSelectedSignalArray];
     
     //当前位置
     NSUInteger index = 0;
@@ -337,91 +355,96 @@
  */
 - (void)ritl_checkChangedDetail:(PHChange *)change
 {
-//    //检测当前组是否发生变化
-//    PHFetchResultChangeDetails * resultChangeObject = [change changeDetailsForFetchResult:self.assetResult];
-//    
-//    if (!resultChangeObject.hasIncrementalChanges)
-//    {
-//        return;
-//    }
-//    
-//    // 获得改变前的result
-//    PHFetchResult * resultBeforeChanges = resultChangeObject.fetchResultBeforeChanges;
-//    
-//    // 获得改变后的result
-//    PHFetchResult * resultAfterChanges = resultChangeObject.fetchResultAfterChanges;
-//    
-//    
-//    
-//    //赋值
-////    self.assetResult = result;
-//    
-//    
-//    //remove
-//    NSMutableIndexSet * removeSet = resultChangeObject.removedIndexes;
-//    
-//    NSArray <PHAsset *> * removeObject = resultChangeObject.removedObjects;
-//    
-//    if (removeSet)
-//    {
-//        //删除该位置的图片
-//        
-//        
-//        NSUInteger i = 1;
-//    }
-//    
-//    
-//    //insert
-//    NSMutableIndexSet * insertSet = resultChangeObject.insertedIndexes;
-//    
-//    if (insertSet)
-//    {
-//        //插入位置的图片
-//        
-//        NSUInteger i = 1;
-//    }
-//    
-//    
-//    //insert
-////    NSIndexSet * insertSet = resultChangeObject.insertedIndexes;
-//    
-//    
-//    if ([[NSThread currentThread] isMainThread])
-//    {
-////        self.reloadBlock(); return;
-//    }
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        
-//        //刷新
-////        self.reloadBlock();
-//        
-//    });
+    //检测当前组是否发生变化
+    PHFetchResultChangeDetails * resultChangeObject = [change changeDetailsForFetchResult:self.assetResult];
     
+    if (!resultChangeObject.hasIncrementalChanges)
+    {
+        return;
+    }
+    
+    // 获得改变前的result
+    PHFetchResult * resultBeforeChanges = resultChangeObject.fetchResultBeforeChanges;
+    
+    // 获得改变后的result
+    PHFetchResult * resultAfterChanges = resultChangeObject.fetchResultAfterChanges;
+    
+    
+    //insert
+    NSMutableIndexSet * insertSet = [resultChangeObject.insertedIndexes copy];
+    
+    if (insertSet)
+    {
+        __block NSMutableArray <NSNumber *> * locations = [NSMutableArray arrayWithCapacity:insertSet.count];
+        
+//        //插入位置的图片
+//        [insertSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+//           
+//            NSLog(@"插入遍历");
+//            
+//            [locations addObject:@(idx)];
+//            
+//            if (locations.count == insertSet.count)
+//            {
+//                //读取完毕
+//                
+//            }
+//            
+//        }];
+        
+        [insertSet enumerateIndexesComplete:^(NSArray<NSNumber *> * _Nonnull indexes) {
+           
+            NSLog(@"插入完毕，count = %@",@(indexes.count));
+            
+        }];
+    }
+    
+    
+    
+    //remove
+    NSMutableIndexSet * removeSet = [resultChangeObject.removedIndexes copy];
+    
+//    NSArray <PHAsset *> * removeObject = resultChangeObject.removedObjects;
 
     
-//    //获得remove的项
-//    NSIndexSet * removeSet = detailChangeObject.removedIndexes;
-//    
-//    if (!removeSet)
-//    {
-//        //进行移除
-//    }
-//    
-//    //获得
+    if (removeSet)
+    {
+        //获得位置
+        __block NSMutableArray <NSNumber *> * locations = [NSMutableArray arrayWithCapacity:removeSet.count];
+        
+        //开始获得所有的位置
+        [removeSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL * _Nonnull stop) {
+           
+            NSLog(@"移除遍历");
+            
+        }];
+//        [removeSet enumerateIndexesComplete:^(NSArray<NSNumber *> * _Nonnull indexes) {
+//            
+//            NSLog(@"移除完毕，count = %@",@(indexes.count));
+//            
+//        }];
+    }
+    
+    //赋值
+    self.assetResult = resultAfterChanges;
+
+    
+    //insert
+//    NSIndexSet * insertSet = resultChangeObject.insertedIndexes;
     
     
+    if ([[NSThread currentThread] isMainThread])
+    {
+        self.reloadBlock(); return;
+    }
     
-//    if ([[NSThread currentThread] isMainThread])
-//    {
-////        [self fetchDefaultGroups]; return;
-//    }
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        
-////        [self fetchDefaultGroups];
-//        
-//    });
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        //刷新
+        self.reloadBlock();
+        
+    });
+
 }
 
 

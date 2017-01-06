@@ -4,6 +4,7 @@
 //
 //  Created by YueWen on 2017/1/6.
 //  Copyright © 2017年 YueWen. All rights reserved.
+//  Github:https://github.com/RITL/RITLImagePickerDemo
 //
 
 #import "NSArray+RITLPhotoRepresentation.h"

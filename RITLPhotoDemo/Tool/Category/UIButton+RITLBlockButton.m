@@ -4,6 +4,7 @@
 //
 //  Created by YueWen on 2016/12/29.
 //  Copyright © 2017年 YueWen. All rights reserved.
+//  Github:https://github.com/RITL/RITLImagePickerDemo
 //
 
 #import "UIButton+RITLBlockButton.h"

@@ -4,6 +4,7 @@
 //
 //  Created by YueWen on 16/6/17.
 //  Copyright © 2017年 YueWen. All rights reserved.
+//  Github:https://github.com/RITL/RITLImagePickerDemo
 //  控制器获得frame的便利方法
 
 #import <UIKit/UIKit.h>

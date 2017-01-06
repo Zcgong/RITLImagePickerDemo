@@ -4,6 +4,7 @@
 //
 //  Created by YueWen on 2016/12/29.
 //  Copyright © 2017年 YueWen. All rights reserved.
+//  Github:https://github.com/RITL/RITLImagePickerDemo
 //
 
 #import "RITLPhotoCacheManager.h"
@@ -12,7 +13,7 @@
 @interface RITLPhotoCacheManager ()
 
 /// 是否选择的长度
-@property (nonatomic, assign)unsigned long numberOfAssetIsSelectedSignal;
+@property (nonatomic, assign)unsigned long numberOfAssetIsSelectedSignal __deprecated_msg("Use assetIsSelectedSignalArray.count instead.");
 
 @end
 
@@ -99,13 +100,17 @@
 
 -(BOOL)changeAssetIsSelectedSignal:(NSUInteger)index
 {
-    if (index > self.numberOfAssetIsSelectedSignal)
+//    if (index > self.numberOfAssetIsSelectedSignal)
+//    {
+//        return false;
+//    }
+    
+    if (index > self.assetIsSelectedSignalArray.count)
     {
         return false;
     }
     
-    self.assetIsSelectedSignal[index] = !self.assetIsSelectedSignal[index];
-    
+//    self.assetIsSelectedSignal[index] = !self.assetIsSelectedSignal[index];
 //    self.assetIsSelectedSignalArray = CFBridgingRelease(self.assetIsPictureSignal);
     
     //修改修改后的状态
@@ -114,6 +119,8 @@
     
 //    printf("选中状态:%d\n",self.assetIsSelectedSignal[index]);
     printf("选中状态:%d\n",self.assetIsSelectedSignalArray[index].boolValue);
+    
+
     
     return true;
 }

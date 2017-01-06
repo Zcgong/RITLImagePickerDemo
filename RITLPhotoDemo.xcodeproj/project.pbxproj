@@ -65,6 +65,7 @@
 		DBA277211DED59BE007F4E0B /* RITLPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DBA2771D1DED59BE007F4E0B /* RITLPhotosViewController.m */; };
 		DBA277241DED5BC6007F4E0B /* RITLPhotosViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = DBA277231DED5BC6007F4E0B /* RITLPhotosViewModel.m */; };
 		DBBAF4541E1F357000E841DD /* NSArray+RITLPhotoRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = DBBAF4531E1F357000E841DD /* NSArray+RITLPhotoRepresentation.m */; };
+		DBBAF48D1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.m in Sources */ = {isa = PBXBuildFile; fileRef = DBBAF48C1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.m */; };
 		DBC3E4DC1D4845F9002FD0C7 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBC3E4DB1D4845F9002FD0C7 /* Photos.framework */; };
 /* End PBXBuildFile section */
 
@@ -215,6 +216,8 @@
 		DBA277231DED5BC6007F4E0B /* RITLPhotosViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RITLPhotosViewModel.m; sourceTree = "<group>"; };
 		DBBAF4521E1F357000E841DD /* NSArray+RITLPhotoRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+RITLPhotoRepresentation.h"; sourceTree = "<group>"; };
 		DBBAF4531E1F357000E841DD /* NSArray+RITLPhotoRepresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+RITLPhotoRepresentation.m"; sourceTree = "<group>"; };
+		DBBAF48B1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSIndexSet+RITLPhotoRepresentation.h"; sourceTree = "<group>"; };
+		DBBAF48C1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSIndexSet+RITLPhotoRepresentation.m"; sourceTree = "<group>"; };
 		DBC3E4DB1D4845F9002FD0C7 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -296,6 +299,8 @@
 				DB6789881E15F6440039894D /* PHFetchResult+RITLPhotoRepresentation.m */,
 				DBBAF4521E1F357000E841DD /* NSArray+RITLPhotoRepresentation.h */,
 				DBBAF4531E1F357000E841DD /* NSArray+RITLPhotoRepresentation.m */,
+				DBBAF48B1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.h */,
+				DBBAF48C1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -684,6 +689,7 @@
 				DB67899E1E1652880039894D /* UINavigationController+MemoryLeak.m in Sources */,
 				DBA276DB1DED2917007F4E0B /* MASViewAttribute.m in Sources */,
 				DB6789A21E1652880039894D /* UIView+MemoryLeak.m in Sources */,
+				DBBAF48D1E1F46BD00E841DD /* NSIndexSet+RITLPhotoRepresentation.m in Sources */,
 				DB28E9981E14EA2A00B30D3C /* UIViewController+RITLPhotoAlertController.m in Sources */,
 				DBA2769B1DED28F6007F4E0B /* RITLPhotoStoreConfiguraion.m in Sources */,
 				DBA2769A1DED28F6007F4E0B /* RITLPhotoStore.m in Sources */,
