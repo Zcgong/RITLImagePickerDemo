@@ -194,6 +194,13 @@
     [self presentViewController:alertController animated:true completion:^{}];
     
 }
+- (IBAction)presentImagePicker:(id)sender {
+    
+    //弹出系统相册
+    [self presentViewController:[UIImagePickerController new] animated:true completion:nil];
+    
+    
+}
 
 
 
